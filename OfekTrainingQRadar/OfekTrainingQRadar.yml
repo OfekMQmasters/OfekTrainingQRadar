@@ -1,0 +1,322 @@
+category: Analytics & SIEM
+commonfields:
+  id: qradar_ofek_training
+  version: -1
+configuration:
+- additionalinfo: The IP Address of QRadar Console. e.g.,1.1.1.1
+  display: Console IP address
+  name: ip_address
+  required: true
+- additionalinfo: The API key for QRadar API. Called SEC in the console.
+  display: QRadar API key
+  name: api_key
+  required: true
+  type: 4
+- additionalinfo: Trust any certificate (not secure)
+  defaultvalue: false
+  display: Trust any certificate (not secure)
+  name: insecure
+  required: false
+  type: 8
+- additionalinfo: "First fetch timestamp (<number> <time unit>, e.g., 12 hours, 7\
+    \ days."
+  defaultvalue: '30'
+  display: "First fetch time "
+  name: fetch_time
+  required: false
+- additionalinfo: Max number of alerts per fetch. Defaults to 20, max is 1000.
+  defaultvalue: '50'
+  display: Fetch Limit
+  name: max_fetch
+  required: false
+- display: Use system proxy settings
+  name: proxy
+  required: false
+  type: 8
+description: "IBM QRadar collects, processes, aggregates, and stores network data\
+  \ in real time. QRadar uses that data to manage network security by providing\
+  \ real-time information and monitoring, alerts and offenses, and responses to network\
+  \ threats"
+display: QRadar Ofek Training
+name: qradar_ofek_training
+script:
+  commands:
+  - arguments: []
+    deprecated: false
+    description: "Retrieves the current system information of the QRadar console. \
+       "
+    execution: false
+    name: qradar-ofek-training-retrieve-about-information
+    outputs:
+    - contextPath: QRadarOfekTraining.About.release_name
+      description: QRadar system's release name
+      type: String
+    - contextPath: QRadarOfekTraining.About.build_version
+      description: QRadar system's build version
+      type: String
+    - contextPath: QRadarOfekTraining.About.external_version
+      description: "QRadar system's external version"
+      type: String
+  - arguments:
+    - default: false
+      description: "An optional time range. i.e: 3 months, 1 week, 1 day ago, etc."
+      isArray: false
+      name: time_range
+      required: false
+      secret: false
+    - default: false
+      description: "Start time. format: YYYY-mm-ddTHH:MM:SSZ or 3 months, 1 week,\
+        \ 1 day ago, etc.Given only the start_time, end_time will be set to the current\
+        \ time."
+      isArray: false
+      name: start_time
+      required: false
+      secret: false
+    - default: false
+      description: "End time. format: YYYY-mm-ddTHH:MM:SSZ or i.e: 3 months, 1\
+        \ week, 1 day ago, etc.Given only the start_time, end_time will be set to\
+        \ the current time."
+      isArray: false
+      name: end_time
+      required: false
+      secret: false
+    deprecated: false
+    description: Execute search query of events which were created in a specific time
+      interval.
+    execution: false
+    name: qradar-ofek-training-search-events-initialize
+    outputs:
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.cursor_id
+      description: search query id
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.status
+      description: search execution status
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.compressed_data_file_count
+      description: number of compressed files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.compressed_data_total_size
+      description: total size of compressed files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.data_file_count
+      description: "number of  files found in the search query"
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.data_total_size
+      description: total size of files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.index_file_count
+      description: number of index files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.index_total_size
+      description: total size of index files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.processed_record_count
+      description: count number of processed records (events) found in the search
+        query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.desired_retention_time_msec
+      description: search query's retention time
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.progress
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.query_execution_time
+      description: start time of the search query execution
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.query_string
+      description: string of the search query itself
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.record_count
+      description: count number of records (events) found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.size_on_disk
+      description: size left on the disk of the console
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.save_results
+      description: save or to not to save the results (events) which fetched from
+        the search query
+      type: Boolean
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.completed
+      description: the search query is completed or not
+      type: Boolean
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.snapshot
+      type: Unknown
+    - contextPath: QRadarOfekTraining.SearchEventsInitialize.search_id
+      description: the id of the search. useful for another commands
+      type: String
+  - arguments:
+    - default: false
+      description: id of search execution
+      isArray: false
+      name: search_id
+      required: true
+      secret: true
+    deprecated: false
+    description: "Get the current status of the search query :  COMPLETED/ EXECUTING/\
+      \ WAITING/ ERROR."
+    execution: false
+    name: qradar-ofek-training-search-events-status
+    outputs:
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.cursor_id
+      description: search query id
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.status
+      description: search execution status
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.compressed_data_file_count
+      description: number of compressed files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.compressed_data_total_size
+      description: total size of compressed files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.data_file_count
+      description: "number of  files found in the search query"
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.data_total_size
+      description: total size of files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.index_file_count
+      description: number of index files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.index_total_size
+      description: total size of index files found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.processed_record_count
+      description: count number of processed records (events) found in the search
+        query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.desired_retention_time_msec
+      description: search query's retention time
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.progress
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.query_execution_time
+      description: start time of the search query execution
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.query_string
+      description: string of the search query itself
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.record_count
+      description: count number of records (events) found in the search query
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.size_on_disk
+      description: size left on the disk of the console
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.save_results
+      description: save or to not to save the results (events) which fetched from
+        the search query
+      type: Boolean
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.completed
+      description: the search query is completed or not
+      type: Boolean
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.snapshot
+      type: Unknown
+    - contextPath: QRadarOfekTraining.SearchEventsStatus.search_id
+      description: the id of the search. useful for another commands
+      type: Number
+  - arguments:
+    - default: false
+      description: id of search execution
+      isArray: false
+      name: search_id
+      required: false
+      secret: false
+    deprecated: false
+    description: "Retrieve the events (QRadar logs) in QRadar, which were fetched\
+      \ by the search query."
+    execution: false
+    name: qradar-ofek-training-search-events-results
+    outputs:
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.starttime
+      description: event start time
+      type: Date
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.protocolid
+      description: protocol id of the event(log)(
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.sourceip
+      description: source ip of the event(where the log created)
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.logsourceid
+      description: source id of the endpoint where the log created
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.qid
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.sourceport
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.eventcount
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.magnitude
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.identityip
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.destinationip
+      type: String
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.destinationport
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.category
+      type: Number
+    - contextPath: QRadarOfekTraining.SearchEventsResults.events.username
+      type: Unknown
+  - arguments:
+    - default: true
+      defaultValue: true
+      description: active ARadar rules
+      isArray: false
+      name: enabled
+      required: false
+      secret: true
+    deprecated: false
+    description: "list QRadar rules. "
+    execution: false
+    name: qradar-ofek-training-list-rules
+    outputs:
+    - contextPath: QRadarOfekTraining.ListRules.owner
+      description: QRadar rule's creator
+      type: String
+    - contextPath: QRadarOfekTraining.ListRules.identifier
+      description: QRadar rule's id
+      type: String
+    - contextPath: QRadarOfekTraining.ListRules.base_host_id
+      description: QRadar rule's base host id
+      type: Number
+    - contextPath: QRadarOfekTraining.ListRules.capacity_timestamp
+      description: "rule timestamp "
+      type: Number
+    - contextPath: QRadarOfekTraining.ListRules.origin
+      description: rule's origin
+      type: String
+    - contextPath: QRadarOfekTraining.ListRules.creation_date
+      description: rule's creation date
+      type: Date
+    - contextPath: QRadarOfekTraining.ListRules.type
+      description: rule's type
+      type: String
+    - contextPath: QRadarOfekTraining.ListRules.enabled
+      description: active\non active rule
+      type: Boolean
+    - contextPath: QRadarOfekTraining.ListRules.modification_date
+      description: "last modification date "
+      type: Date
+    - contextPath: QRadarOfekTraining.ListRules.linked_rule_identifier
+      description: linked rules id
+      type: Unknown
+    - contextPath: QRadarOfekTraining.ListRules.name
+      description: rule name
+      type: String
+    - contextPath: QRadarOfekTraining.ListRules.average_capacity
+      description: rule's average capacity
+      type: Number
+    - contextPath: QRadarOfekTraining.ListRules.id
+      description: rule id
+      type: Number
+    - contextPath: QRadarOfekTraining.ListRules.base_capacity
+      description: rule base capacity
+      type: Number
+  dockerimage: demisto/python3:3.8.3.8715
+  feed: false
+  isfetch: true
+  longRunning: false
+  longRunningPort: false
+  runonce: false
+  script: '-'
+  subtype: python3
+  type: python
